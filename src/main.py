@@ -1,15 +1,17 @@
-from src.views import get_home_data
-from src.services import analyze_cashback_categories, simple_search, search_by_phone
-from src.reports import spending_by_category
 import pandas as pd
+from src.views import get_home_data
+from src.reports import spending_by_category
+from src.utils import load_user_settings
 
-def main():
-    data = pd.read_excel('data/operations.xlsx')
-    print(get_home_data("2023-10-20 12:00:00"))
-    print(analyze_cashback_categories(data, 2025, 3))
-    print(simple_search(data, "Coffee"))
-    print(search_by_phone(data))
-    print(spending_by_category(data, "Food"))
 
 if __name__ == "__main__":
-    main()
+    df = pd.read_excel(r"C:\Users\GAYniy\PycharmProjects\cousre_job\data\operations.xlsx")
+    df["Дата операции"] = pd.to_datetime(df["Дата операции"], format="%d.%m.%Y %H:%M:%S", dayfirst=True)
+
+    # Вызов главной страницы
+    print(get_home_data("2025-03-12 14:30:00"))
+
+
+    # Генерация отчета
+    report = spending_by_category(df, "Продукты", "2025-03-12")
+    print(report)

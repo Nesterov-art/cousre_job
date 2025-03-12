@@ -1,31 +1,36 @@
-from datetime import datetime
-import logging
-
-# Настройка логирования
-def setup_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.FileHandler("app.log"),
-            logging.StreamHandler()
-        ]
-    )
-
-def parse_date(date_str, date_format="%Y-%m-%d %H:%M:%S"):
-    """Функция для преобразования строки в дату"""
-    try:
-        return datetime.strptime(date_str, date_format)
-    except ValueError as e:
-        logging.error(f"Ошибка при преобразовании даты: {e}")
-        raise
+import os
+import json
+import requests
+import pandas as pd
+from dotenv import load_dotenv
 
 
-def calculate_cashback(amount):
-    """Функция для вычисления кешбэка"""
-    return int(amount // 100)
+load_dotenv()
+
+# Загружаем настройки пользователя
+def load_user_settings():
+    path = r"C:\Users\GAYniy\PycharmProjects\cousre_job\user_settings.json"  # Абсолютный путь
+    with open(path, "r", encoding="utf-8") as f:
+        settings = json.load(f)
+    return settings
 
 
-def filter_data_by_date(data, start_date, end_date):
-    """Функция для фильтрации данных по дате"""
-    return data[(data['date'] >= start_date) & (data['date'] <= end_date)]
+# Получение курсов валют
+def get_exchange_rates():
+    api_key = os.getenv("CURRENCY_API_KEY")
+    url = f"https://api.apilayer.com/currency_data/live?access_key={api_key}&currencies=USD,EUR,RUB"
+    response = requests.get(url).json()
+    return response.get("quotes", {})
+
+
+# Получение цен на акции
+def get_stock_prices(symbols):
+    api_key = os.getenv("STOCKS_API_KEY")
+    prices = {}
+
+    for symbol in symbols:
+        url = f"https://v6.exchangerate-api.com/v6/{api_key}/latest/{symbol}"
+        response = requests.get(url).json()
+        prices[symbol] = response.get("conversion_rates", {}).get("USD", "N/A")
+
+    return prices
