@@ -9,9 +9,15 @@ load_dotenv()
 
 # Загружаем настройки пользователя
 def load_user_settings():
-    path = r"C:\Users\GAYniy\PycharmProjects\cousre_job\user_settings.json"  # Абсолютный путь
-    with open(path, "r", encoding="utf-8") as f:
-        settings = json.load(f)
+    try:
+        with open("user_settings.json", "r", encoding="utf-8") as f:
+            settings = json.load(f)
+    except FileNotFoundError:
+        settings = {}
+
+    settings.setdefault("user_stocks", ["AAPL", "MSFT", "GOOGL"])
+    settings.setdefault("exchange_rates", ["EUR", "GBP", "RUB"])
+
     return settings
 
 

@@ -13,5 +13,5 @@ if __name__ == "__main__":
 
 
     # Генерация отчета
-    report = spending_by_category(df, "Продукты", "2025-03-12")
+    report = spending_by_category(df, "Продукты", "2021-03-12")
     print(report)
