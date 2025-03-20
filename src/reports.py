@@ -1,37 +1,16 @@
-import json
 import pandas as pd
-from datetime import datetime
-from functools import wraps
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 
-def save_report(filename=None):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs)
-            file_name = filename or f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            with open(file_name, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=4)
-            return result
+def spending_by_category(df, category, start_date):
+    """Анализирует траты по категории за 3 месяца."""
+    logging.info(f"Анализируем траты в категории {category} с {start_date}")
 
-        return wrapper
+    start_date = pd.to_datetime(start_date)
+    three_months_ago = start_date - pd.DateOffset(months=3)
 
-    return decorator
+    filtered_df = df[(df["Категория"] == category) & (df["Дата операции"] >= three_months_ago)]
 
-
-@save_report()
-def spending_by_category(df, category, date=None):
-    if date is None:
-        date = datetime.now()
-    else:
-        date = datetime.strptime(date, "%Y-%m-%d")
-
-    start_date = date - pd.DateOffset(months=3)
-    df["Дата операции"] = pd.to_datetime(df["Дата операции"])
-
-    filtered_df = df[(df["Дата операции"] >= start_date) &
-                     (df["Дата операции"] <= date) &
-                     (df["Категория"] == category) &
-                     (df["Сумма операции"] < 0)]
-
-    return filtered_df.to_dict(orient="records")
+    return filtered_df  # Теперь возвращаем DataFrame

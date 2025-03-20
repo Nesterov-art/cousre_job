@@ -1,23 +1,20 @@
 import json
 import logging
-from datetime import datetime
-from collections import defaultdict
 
-logging.basicConfig(filename="services.log", level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
-def analyze_cashback(data, year, month):
-    cashback = defaultdict(int)
+def analyze_cashback(transactions, year, month):
+    """Анализирует категории с повышенным кешбэком."""
+    logging.info(f"Анализ кешбэка за {year}-{month}")
 
-    for transaction in data:
-        trans_date = datetime.strptime(transaction["Дата операции"], "%Y-%m-%d")
-        if trans_date.year == year and trans_date.month == month:
-            category = transaction["Категория"]
-            amount = float(transaction["Сумма операции"])
-            if amount < 0:
-                cashback[category] += abs(amount) * 0.01
+    filtered = [t for t in transactions if t["Дата операции"].year == year and t["Дата операции"].month == month]
+    categories = {}
 
-    return json.dumps(cashback, ensure_ascii=False, indent=4)
+    for t in filtered:
+        category = t["Категория"]
+        cashback = t.get("Кешбэк", 0)
+        categories[category] = categories.get(category, 0) + cashback
 
-def simple_search(data, query):
-    results = [t for t in data if query.lower() in t["Категория"].lower() or query.lower() in t["Описание"].lower()]
-    return json.dumps(results, ensure_ascii=False, indent=4)
+    top_categories = sorted(categories.items(), key=lambda x: x[1], reverse=True)[:3]
+
+    return json.dumps({"top_cashback_categories": top_categories}, ensure_ascii=False, indent=4)
