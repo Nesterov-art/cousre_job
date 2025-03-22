@@ -3,6 +3,8 @@ import pandas as pd
 from src.views import get_home_data
 from src.reports import spending_by_category
 from src.utils import load_user_settings
+from src.services import analyze_cashback, simple_search
+
 
 
 if __name__ == "__main__":

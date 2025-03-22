@@ -13,4 +13,4 @@ def spending_by_category(df, category, start_date):
 
     filtered_df = df[(df["Категория"] == category) & (df["Дата операции"] >= three_months_ago)]
 
-    return filtered_df  # Теперь возвращаем DataFrame
+    return filtered_df

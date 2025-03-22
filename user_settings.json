@@ -1,5 +1,9 @@
 {
     "greeting": "Добрый день",
     "user_stocks": ["AAPL", "MSFT", "GOOGL"],
-    "exchange_rates": ["EUR", "GBP"]
+  "exchange_rates": {
+    "USD": 75.0,
+    "EUR": 85.0
+  },
+  "other_setting": "value"
 }

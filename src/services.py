@@ -4,7 +4,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 def analyze_cashback(transactions, year, month):
-    """Анализирует категории с повышенным кешбэком."""
+    """Анализирует категории с повышенным кешбэком"""
     logging.info(f"Анализ кешбэка за {year}-{month}")
 
     filtered = [t for t in transactions if t["Дата операции"].year == year and t["Дата операции"].month == month]
@@ -18,3 +18,9 @@ def analyze_cashback(transactions, year, month):
     top_categories = sorted(categories.items(), key=lambda x: x[1], reverse=True)[:3]
 
     return json.dumps({"top_cashback_categories": top_categories}, ensure_ascii=False, indent=4)
+
+
+def simple_search(operations, keyword):
+    """Простой поиск операций по ключевому слову"""
+    logging.info(f"Поиск операций с ключевым словом: {keyword}")
+    return [op for op in operations if keyword.lower() in str(op).lower()]
