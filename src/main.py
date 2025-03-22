@@ -18,7 +18,7 @@ if __name__ == "__main__":
     # Вызов главной страницы
     print(get_home_data("2025-03-12 14:30:00"))
 
-    # Вызов сервисв
+    # Вызов сервисов
     # Сервисы по ТЗ должны работать со списком словарей. Сначала сделаем из датафрейма - список словарей
     operations_as_dicts = df.to_dict(orient='records')
     print(analyze_cashback(operations_as_dicts, 2021, 12))
